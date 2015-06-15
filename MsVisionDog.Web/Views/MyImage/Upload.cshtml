@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Upload Image";
+    List<MsVisionDog.Common.MyEntity> myEntities = ViewBag.MyEntities;
+}
+
+<h2>Upload Image</h2>
+
+@using (Html.BeginForm("Upload", "MyImage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input type="file" name="imageFile" /><br /><br />
+
+    <h4>For training the system, select the thing this image relates to...</h4>
+    <table class="table">
+        @foreach (var e in myEntities)
+        {
+            <tr>
+                <td width="5px"><input type="checkbox" name="myEntities" value="@e.MyEntityID" @(Request["myentityid"] == e.MyEntityID ? "checked" : "") /></td>
+                <td>@e.Name</td>
+            </tr>
+        }
+    </table>
+    
+    <input type="submit" value="Upload" class="btn btn-primary" />
+}

@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "Create Thing";
+}
+
+<h2>Create Thing</h2>
+
+@using (Html.BeginForm("Create", "MyEntity", FormMethod.Post))
+{
+    <input type="text" name="name" />
+    <input type="submit" value="Create" />
+}
+

@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "My Thing Details";
+    MsVisionDog.Common.MyEntity myEntity = ViewBag.MyEntity;
+    List<MsVisionDog.Common.MyImage> myImages = ViewBag.MyImages;
+}
+
+<h2>My Thing Details</h2>
+
+@myEntity.Name
+
+<h3>Images</h3>
+<a href="@Url.Action("Upload", "MyImage", new { myentityid = myEntity.MyEntityID })" class="btn btn-primary btn-sm">upload</a><br /><br />
+<table class="table">
+    @foreach (var i in myImages)
+    {
+        <tr>
+            <td>
+                <img src="@i.Url" style="width:300px;" />
+            </td>
+        </tr>
+    }
+</table>
+

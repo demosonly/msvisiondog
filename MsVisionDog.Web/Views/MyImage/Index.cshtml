@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "My Images";
+
+    List<MsVisionDog.Common.MyImage> myImages = ViewBag.MyImages;
+    MsVisionDog.Common.MyDbContext db = new MsVisionDog.Common.MyDbContext();
+}
+
+<h2>My Images</h2>
+
+<a href="@Url.Action("Upload")" class="btn btn-primary">Upload</a>
+
+<br /><br />
+
+<table class="table">
+    <tr>
+        <th width="300px">Image</th>
+        <th>Related</th>
+        <th>What is it</th>
+        <th>OCR</th>
+        <th>Created</th>
+    </tr>
+    @foreach (var i in myImages)
+    {
+        <tr>
+            <td>
+                <img src="@i.Url" style="width:250px;" />
+            </td>
+            <td>
+                @{
+                    var entityIDs = db.MyEntityImages.Where(ei => ei.UserID == User.Identity.Name && ei.MyImageID == i.MyImageID).Select(ei => ei.MyEntityID).ToList();
+                    var myEntities = db.MyEntities.Where(en => en.UserID == User.Identity.Name && entityIDs.Contains(en.MyEntityID)).ToList();
+                }
+                <ul>
+                    @foreach (var en in myEntities)
+                    {
+                        <li><a href="@Url.Action("Details", "MyEntity", new { id = en.MyEntityID})">@en.Name</a></li>
+                    }
+                </ul>
+            </td>
+            <td>
+                @{
+                    var isHuman = false;
+                    var analysisResult = Newtonsoft.Json.JsonConvert.DeserializeObject<Microsoft.ProjectOxford.Vision.Contract.AnalysisResult>(i.ComputerVisionApiResponse);
+                    isHuman = analysisResult.Categories.Any(c => c.Name.ToUpper().Contains("PEOPLE"));
+                    var facesCount = analysisResult.Faces.Count();
+                }
+                @if (isHuman)
+                {
+                    <span class="label label-success">@facesCount Faces</span>
+                    @MsVisionDog.Common.MyVisionHelper.GetFacesToSpeak(analysisResult)
+                }
+                else
+                {
+                    <span class="label label-default">Categories</span>
+                    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                    foreach (var c in analysisResult.Categories.Where(c => !c.Name.StartsWith("text_")).OrderByDescending(c => c.Score))
+                    {
+                        sb.Append(c.Name + " ");
+                    }
+                    @sb.ToString();
+                    if (sb.Length > 0)
+                    {
+                        <audio controls>
+                            <source src="https://msvisiondog01.blob.core.windows.net/@(User.Identity.Name.Replace("@", "-").Replace(".", "-").ToLower())/cat-@(i.MyImageID).wav">
+                        </audio>
+                        <span>@sb.ToString()</span>
+                    }
+                }
+            </td>
+            <td>
+                @{
+                    var text = MsVisionDog.Common.MyVisionHelper.GetTextToSpeak(i.DetailsJson);
+                }
+                @if (!string.IsNullOrEmpty(text))
+                { 
+                <audio controls>
+                    <source src="https://msvisiondog01.blob.core.windows.net/@(User.Identity.Name.Replace("@", "-").Replace(".", "-").ToLower())/ocr-@(i.MyImageID).wav">
+                </audio>
+                <span class="label label-info">OCR Text</span>
+                <span>@text</span>
+                }
+            </td>
+            <td>
+
+            </td>
+            <td>@i.DateCreated</td>
+           <!--<td>
+                @i.ComputerVisionApiResponse<hr />
+                @i.DetailsJson
+            </td>-->
+        </tr>
+    }
+</table>

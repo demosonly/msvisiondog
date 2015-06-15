@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <img src="@Url.Content("~/Content/images/hero.jpg")" style="width:500px;" />
+    <h1>MsVisionDog&trade;</h1>
+    <p class="lead">MsVisionDog&trade; is an application that lets vision impaired persons "see", understand, and store the pictures of their family, friends, and the world around them.</p>
+    <p><a href="@Url.Action("Register","Account")" class="btn btn-primary btn-lg">Sign Up &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>"See"</h2>
+        <p>
+            Take a picture, upload it to the service, and MyVisionDog will tell you what is in it...
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h2>Store</h2>
+        <p>Attach pictures to your contacts, friends, and family</p>
+    </div>
+    <div class="col-md-4">
+        <h2>Interact</h2>
+        <p>Use text-to-speech and speech-to-text to interact with your contacts</p>
+    </div>
+</div>

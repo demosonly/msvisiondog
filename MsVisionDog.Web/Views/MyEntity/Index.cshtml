@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "My Things";
+
+    List<MsVisionDog.Common.MyEntity> myEntities = ViewBag.MyEntities;
+}
+
+<h2>My Things</h2>
+
+<a href="@Url.Action("Create")" class="btn btn-primary">Create</a>
+
+<br /><br />
+
+<table class="table">
+    @foreach (var e in myEntities)
+    { 
+    <tr>
+        <td><a href="@Url.Action("Details", new { id = e.MyEntityID})">@e.Name</a></td>
+        <td>@e.DateCreated</td>
+    </tr>
+    }
+</table>
+
